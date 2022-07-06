@@ -2,7 +2,7 @@
  * @author: tisfeng
  * @createTime: 2022-06-30 00:23
  * @lastEditor: tisfeng
- * @lastEditTime: 2022-07-06 22:41
+ * @lastEditTime: 2022-07-07 00:28
  * @fileName: index.tsx
  *
  * Copyright (c) 2022 by tisfeng, All Rights Reserved.
@@ -38,20 +38,34 @@ export default function () {
   /**
    * function: replaceCodeBlock, Replace the language in the code block to the specified language
    * 
-```ts
-npm i @types/react -s
+    ```js
+    npm i @types/react -s
+    npm i @types/react-dom -s
+    ```
 
-npm i @types/react-dom -s
-```
+    ```js
+    npm i @types/react -s
+    npm i @types/react-dom -s
+    ```
    */
   function replaceCodeBlockLanuage(code: string, language: string) {
     const lines = code.split("\n");
     let index = 0;
     const newLines = lines.map((line) => {
+      console.log(`line: ${line}`);
+
       if (line.trim().startsWith("```")) {
         index += 1;
         if (index % 2 === 1) {
-          return line.replace(line, `\`\`\`${language}`);
+          const [, originalLanguage] = line.split("```");
+          console.log(`originalLanguage: ${originalLanguage}`);
+          if (originalLanguage.length > 0) {
+            console.log(`replace language: ${language}`);
+            return line.replace(originalLanguage, `${language}`);
+          } else {
+            console.log(`language is empty`);
+            return line + language;
+          }
         } else {
           return line;
         }
@@ -59,10 +73,8 @@ npm i @types/react-dom -s
         return line;
       }
     });
-
     const newCode = newLines.join("\n");
     console.log(`newCode:\n ${newCode}`);
-
     setMarkdown(newCode);
     return newCode;
   }
@@ -75,26 +87,21 @@ npm i @types/react-dom -s
   return (
     <List
       isShowingDetail={false}
-      searchBarPlaceholder={"Code block language"}
+      searchBarPlaceholder={"Type a language to replace in the selected code blocks"}
       onSearchTextChange={onInputChangeEvent}
       actions={
         <ActionPanel>
           <Action.CopyToClipboard
-            title={`Replace Language With ${inputText}`}
+            title={`Replace With ${inputText}`}
             content={markdown}
             onCopy={() => {
               Clipboard.paste(markdown);
             }}
-            // onAction={pop}
-            // onAction={() => {
-            //   replaceCodeBlockLanuage(markdown, inputText);
-            //   return pop;
-            // }}
           />
         </ActionPanel>
       }
     >
-      <List.EmptyView icon={Icon.TextDocument} title="Type a language to replace code block markdown" />
+      <List.EmptyView icon={Icon.TextDocument} title="Please select the markdown code blocks first" />
     </List>
   );
 }
