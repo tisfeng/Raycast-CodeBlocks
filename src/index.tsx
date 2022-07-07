@@ -2,7 +2,7 @@
  * @author: tisfeng
  * @createTime: 2022-06-30 00:23
  * @lastEditor: tisfeng
- * @lastEditTime: 2022-07-07 10:54
+ * @lastEditTime: 2022-07-07 11:03
  * @fileName: index.tsx
  *
  * Copyright (c) 2022 by tisfeng, All Rights Reserved.
@@ -16,9 +16,7 @@ export default function () {
   const [markdown, setMarkdown] = useState<string>("");
 
   useEffect(() => {
-    if (inputText) {
-      replaceCodeBlockLanuage(markdown, inputText);
-    } else {
+    if (!inputText) {
       tryQuerySelecedtText();
     }
   }, [inputText]);
@@ -37,34 +35,34 @@ export default function () {
   /**
    * function: replaceCodeBlock, Replace the language in the code block to the specified language
    * 
-    ``` 
+    ```js
     npm i @types/react -s
     npm i @types/react-dom -s
     ```
 
-    ``` 
+    ```
     npm i @types/react -s
     npm i @types/react-dom -s
     ```
    */
-  function replaceCodeBlockLanuage(code: string, language: string) {
+  function replaceCodeBlockLanguage(code: string, newLanguage: string) {
     console.log(`code:\n ${code}`);
     const lines = code.split("\n");
     const codeBlockSymbol = "```";
     let index = 0;
     const newLines = lines.map((line) => {
-      console.log(`line: ${line}`);
+      // console.log(`line: ${line}`);
       if (line.trim().startsWith(codeBlockSymbol)) {
         index += 1;
         if (index % 2 === 1) {
           const [startSymbol, originalLanguage] = line.split(codeBlockSymbol);
           if (originalLanguage.length > 0) {
-            console.log(`originalLanguage > 0: ${originalLanguage}`);
-            const replacedLanguage = originalLanguage.replace(originalLanguage, `${language}`);
+            // console.log(`originalLanguage > 0: ${originalLanguage}`);
+            const replacedLanguage = originalLanguage.replace(originalLanguage, `${newLanguage}`);
             return `${startSymbol}${codeBlockSymbol}${replacedLanguage}`;
           } else {
-            console.log(`originalLanguage is empty`);
-            return line + language;
+            // console.log(`originalLanguage is empty`);
+            return line + newLanguage;
           }
         } else {
           return line;
@@ -74,7 +72,6 @@ export default function () {
       }
     });
     const newCode = newLines.join("\n");
-    setMarkdown(newCode);
     console.log(`---> newCode:\n ${newCode}`);
     return newCode;
   }
@@ -93,7 +90,8 @@ export default function () {
           <Action
             title={`Replace With ${inputText}`}
             onAction={() => {
-              Clipboard.paste(markdown);
+              const newCode = replaceCodeBlockLanguage(markdown, inputText);
+              Clipboard.paste(newCode);
               closeMainWindow({ clearRootSearch: true });
             }}
           />
