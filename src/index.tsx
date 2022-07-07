@@ -2,7 +2,7 @@
  * @author: tisfeng
  * @createTime: 2022-06-30 00:23
  * @lastEditor: tisfeng
- * @lastEditTime: 2022-07-07 11:03
+ * @lastEditTime: 2022-07-07 16:27
  * @fileName: index.tsx
  *
  * Copyright (c) 2022 by tisfeng, All Rights Reserved.
@@ -10,6 +10,7 @@
 
 import { Action, ActionPanel, Clipboard, closeMainWindow, getSelectedText, Icon, List } from "@raycast/api";
 import { useEffect, useState } from "react";
+import { programLanguages } from "./programLanguages";
 
 export default function () {
   const [inputText, setInputText] = useState<string>("");
@@ -33,20 +34,10 @@ export default function () {
   }
 
   /**
-   * function: replaceCodeBlock, Replace the language in the code block to the specified language
-   * 
-    ```js
-    npm i @types/react -s
-    npm i @types/react-dom -s
-    ```
-
-    ```
-    npm i @types/react -s
-    npm i @types/react-dom -s
-    ```
+   *  Replace the language in the code block to the specified language.
    */
   function replaceCodeBlockLanguage(code: string, newLanguage: string) {
-    console.log(`code:\n ${code}`);
+    // console.log(`code:\n ${code}`);
     const lines = code.split("\n");
     const codeBlockSymbol = "```";
     let index = 0;
@@ -72,7 +63,7 @@ export default function () {
       }
     });
     const newCode = newLines.join("\n");
-    console.log(`---> newCode:\n ${newCode}`);
+    // console.log(`---> newCode:\n ${newCode}`);
     return newCode;
   }
 
@@ -84,7 +75,24 @@ export default function () {
     <List
       isShowingDetail={false}
       searchBarPlaceholder={"Type a language to replace in the selected code blocks"}
+      searchText={inputText}
       onSearchTextChange={onInputChangeEvent}
+      searchBarAccessory={
+        <List.Dropdown
+          tooltip="Select Program Language"
+          storeValue={true}
+          onChange={(selectedLanauge) => {
+            console.log(`newValue: ${selectedLanauge}`);
+            setInputText(selectedLanauge);
+          }}
+        >
+          <List.Dropdown.Section title="Select Language">
+            {programLanguages.map((languageItem) => (
+              <List.Dropdown.Item key={languageItem.name} title={languageItem.name} value={languageItem.value} />
+            ))}
+          </List.Dropdown.Section>
+        </List.Dropdown>
+      }
       actions={
         <ActionPanel>
           <Action
@@ -102,3 +110,13 @@ export default function () {
     </List>
   );
 }
+
+/**
+ * test code block
+ * 
+```js
+let a = 0;
+let b = 1;
+let c = a + b;
+```
+ */
