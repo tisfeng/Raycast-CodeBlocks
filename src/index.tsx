@@ -2,7 +2,7 @@
  * @author: tisfeng
  * @createTime: 2022-06-30 00:23
  * @lastEditor: tisfeng
- * @lastEditTime: 2022-07-07 01:37
+ * @lastEditTime: 2022-07-07 10:54
  * @fileName: index.tsx
  *
  * Copyright (c) 2022 by tisfeng, All Rights Reserved.
@@ -26,6 +26,7 @@ export default function () {
   function tryQuerySelecedtText() {
     getSelectedText()
       .then((selectedText) => {
+        console.log("selectedText:\n", selectedText);
         setMarkdown(selectedText);
       })
       .catch(() => {
@@ -36,27 +37,33 @@ export default function () {
   /**
    * function: replaceCodeBlock, Replace the language in the code block to the specified language
    * 
-    ```ts
+    ``` 
     npm i @types/react -s
     npm i @types/react-dom -s
     ```
 
-    ```ts
+    ``` 
     npm i @types/react -s
     npm i @types/react-dom -s
     ```
    */
   function replaceCodeBlockLanuage(code: string, language: string) {
+    console.log(`code:\n ${code}`);
     const lines = code.split("\n");
+    const codeBlockSymbol = "```";
     let index = 0;
     const newLines = lines.map((line) => {
-      if (line.trim().startsWith("```")) {
+      console.log(`line: ${line}`);
+      if (line.trim().startsWith(codeBlockSymbol)) {
         index += 1;
         if (index % 2 === 1) {
-          const [, originalLanguage] = line.split("```");
+          const [startSymbol, originalLanguage] = line.split(codeBlockSymbol);
           if (originalLanguage.length > 0) {
-            return line.replace(originalLanguage, `${language}`);
+            console.log(`originalLanguage > 0: ${originalLanguage}`);
+            const replacedLanguage = originalLanguage.replace(originalLanguage, `${language}`);
+            return `${startSymbol}${codeBlockSymbol}${replacedLanguage}`;
           } else {
+            console.log(`originalLanguage is empty`);
             return line + language;
           }
         } else {
@@ -68,11 +75,12 @@ export default function () {
     });
     const newCode = newLines.join("\n");
     setMarkdown(newCode);
+    console.log(`---> newCode:\n ${newCode}`);
     return newCode;
   }
 
   const onInputChangeEvent = (inputText: string) => {
-    setInputText(inputText.trim());
+    setInputText(inputText);
   };
 
   return (
@@ -85,9 +93,8 @@ export default function () {
           <Action
             title={`Replace With ${inputText}`}
             onAction={() => {
-              const newCode = replaceCodeBlockLanuage(markdown, inputText);
-              Clipboard.paste(newCode);
-              closeMainWindow();
+              Clipboard.paste(markdown);
+              closeMainWindow({ clearRootSearch: true });
             }}
           />
         </ActionPanel>
