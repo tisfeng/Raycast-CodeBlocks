@@ -3,7 +3,7 @@
   "name": "codeblock",
   "title": "CodeBlock",
   "description": "Replace programe language in code block with the specified language",
-  "icon": "command-icon.png",
+  "icon": "CodeBlock.png",
   "author": "isfeng",
   "categories": [
     "Developer Tools",
