@@ -1,8 +1,8 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
-  "name": "codeblock",
-  "title": "CodeBlock",
-  "description": "Replace programe language in code block with the specified language",
+  "name": "codeblocks",
+  "title": "CodeBlocks",
+  "description": "Set or modify the programming language in markdown code blocks in batch.",
   "icon": "CodeBlock.png",
   "author": "isfeng",
   "categories": [
@@ -13,11 +13,17 @@
   "commands": [
     {
       "name": "index",
-      "title": "Replace Language",
-      "subtitle": "Code Block",
-      "description": "Replace programe language in code block with the specified language",
+      "title": "Set Language",
+      "subtitle": "Code Blocks",
+      "description": "Set or modify the programming language in markdown code blocks in batch.",
       "mode": "view"
     }
+  ],
+  "keywords": [
+    "markdown",
+    "codeblock",
+    "programming",
+    "language"
   ],
   "dependencies": {
     "@raycast/api": "^1.37.1"

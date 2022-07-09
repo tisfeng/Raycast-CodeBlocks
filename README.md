@@ -1,2 +1,3 @@
 # CodeBlock
-Replace programe language in code block with the specified language
+
+Set or modify the programming language in markdown code blocks in batch.
