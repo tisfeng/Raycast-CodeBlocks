@@ -2,7 +2,7 @@
  * @author: tisfeng
  * @createTime: 2022-06-30 00:23
  * @lastEditor: tisfeng
- * @lastEditTime: 2022-07-10 09:51
+ * @lastEditTime: 2022-07-10 09:56
  * @fileName: index.tsx
  *
  * Copyright (c) 2022 by tisfeng, All Rights Reserved.
@@ -84,7 +84,7 @@ export default function () {
           tooltip="Select Language"
           storeValue={true}
           onChange={(selectedLanauge) => {
-            console.log(`newValue: ${selectedLanauge}`);
+            // console.log(`newValue: ${selectedLanauge}`);
             setInputText(selectedLanauge);
           }}
         >
@@ -108,7 +108,7 @@ export default function () {
         </ActionPanel>
       }
     >
-      <List.EmptyView icon={Icon.TextDocument} title="Please select the markdown code blocks first" />
+      <List.EmptyView icon={Icon.ExclamationMark} title="Please select the markdown code blocks first" />
     </List>
   );
 }
