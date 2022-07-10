@@ -2,13 +2,13 @@
  * @author: tisfeng
  * @createTime: 2022-07-07 11:42
  * @lastEditor: tisfeng
- * @lastEditTime: 2022-07-10 09:43
- * @fileName: programLanguages.ts
+ * @lastEditTime: 2022-07-11 00:41
+ * @fileName: languages.ts
  *
  * Copyright (c) 2022 by tisfeng, All Rights Reserved.
  */
 
-export interface ProgramLanguage {
+export interface LanguageItem {
   name: string;
   value: string;
 }
@@ -18,7 +18,7 @@ export interface ProgramLanguage {
  *
  * ref: https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
  */
-export const programLanguages: ProgramLanguage[] = [
+export const languageItems: LanguageItem[] = [
   { name: "Swift", value: "swift" },
   { name: "Objective-C", value: "objc" },
   { name: "JavaScript", value: "js" },

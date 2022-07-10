@@ -2,7 +2,7 @@
  * @author: tisfeng
  * @createTime: 2022-06-30 00:23
  * @lastEditor: tisfeng
- * @lastEditTime: 2022-07-10 09:56
+ * @lastEditTime: 2022-07-11 00:44
  * @fileName: index.tsx
  *
  * Copyright (c) 2022 by tisfeng, All Rights Reserved.
@@ -10,7 +10,7 @@
 
 import { Action, ActionPanel, Clipboard, closeMainWindow, getSelectedText, Icon, List } from "@raycast/api";
 import { useEffect, useState } from "react";
-import { programLanguages } from "./programLanguages";
+import { languageItems } from "./languages";
 
 export default function () {
   const [inputText, setInputText] = useState<string>("");
@@ -26,7 +26,7 @@ export default function () {
     getSelectedText()
       .then((selectedText) => {
         console.log("selectedText:\n", selectedText);
-        setMarkdown(selectedText);
+        setMarkdown(selectedText.trim());
       })
       .catch(() => {
         // do nothing
@@ -89,7 +89,7 @@ export default function () {
           }}
         >
           <List.Dropdown.Section title="Set Language">
-            {programLanguages.map((languageItem) => (
+            {languageItems.map((languageItem) => (
               <List.Dropdown.Item key={languageItem.name} title={languageItem.name} value={languageItem.value} />
             ))}
           </List.Dropdown.Section>
@@ -108,7 +108,10 @@ export default function () {
         </ActionPanel>
       }
     >
-      <List.EmptyView icon={Icon.ExclamationMark} title="Please select the markdown code blocks first" />
+      <List.EmptyView
+        icon={markdown.length > 0 ? Icon.Checkmark : Icon.ExclamationMark}
+        title="Please select the markdown code blocks first"
+      />
     </List>
   );
 }
