@@ -2,7 +2,7 @@
  * @author: tisfeng
  * @createTime: 2022-06-30 00:23
  * @lastEditor: tisfeng
- * @lastEditTime: 2022-07-07 16:27
+ * @lastEditTime: 2022-07-10 09:51
  * @fileName: index.tsx
  *
  * Copyright (c) 2022 by tisfeng, All Rights Reserved.
@@ -36,7 +36,7 @@ export default function () {
   /**
    *  Replace the language in the code block to the specified language.
    */
-  function replaceCodeBlockLanguage(code: string, newLanguage: string) {
+  function setCodeBlockLanguage(code: string, newLanguage: string) {
     // console.log(`code:\n ${code}`);
     const lines = code.split("\n");
     const codeBlockSymbol = "```";
@@ -71,22 +71,24 @@ export default function () {
     setInputText(inputText);
   };
 
+  const actionTitle = inputText.length > 0 ? `Set Language: ${inputText}` : `Set Language`;
+
   return (
     <List
       isShowingDetail={false}
-      searchBarPlaceholder={"Type a language to replace in the selected code blocks"}
+      searchBarPlaceholder={"Type a language..."}
       searchText={inputText}
       onSearchTextChange={onInputChangeEvent}
       searchBarAccessory={
         <List.Dropdown
-          tooltip="Select Program Language"
+          tooltip="Select Language"
           storeValue={true}
           onChange={(selectedLanauge) => {
             console.log(`newValue: ${selectedLanauge}`);
             setInputText(selectedLanauge);
           }}
         >
-          <List.Dropdown.Section title="Select Language">
+          <List.Dropdown.Section title="Set Language">
             {programLanguages.map((languageItem) => (
               <List.Dropdown.Item key={languageItem.name} title={languageItem.name} value={languageItem.value} />
             ))}
@@ -96,9 +98,9 @@ export default function () {
       actions={
         <ActionPanel>
           <Action
-            title={`Replace With ${inputText}`}
+            title={actionTitle}
             onAction={() => {
-              const newCode = replaceCodeBlockLanguage(markdown, inputText);
+              const newCode = setCodeBlockLanguage(markdown, inputText);
               Clipboard.paste(newCode);
               closeMainWindow({ clearRootSearch: true });
             }}
