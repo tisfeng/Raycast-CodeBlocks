@@ -2,13 +2,13 @@
  * @author: tisfeng
  * @createTime: 2022-06-30 00:23
  * @lastEditor: tisfeng
- * @lastEditTime: 2022-07-11 10:06
+ * @lastEditTime: 2022-07-11 15:49
  * @fileName: index.tsx
  *
  * Copyright (c) 2022 by tisfeng, All Rights Reserved.
  */
 
-import { Action, ActionPanel, Clipboard, closeMainWindow, getSelectedText, Icon, List } from "@raycast/api";
+import { Action, ActionPanel, Clipboard, closeMainWindow, getSelectedText, Icon, List, popToRoot } from "@raycast/api";
 import { useEffect, useState } from "react";
 
 export default function () {
@@ -16,10 +16,10 @@ export default function () {
   const [markdown, setMarkdown] = useState<string>("");
 
   useEffect(() => {
-    if (!inputText) {
+    if (!markdown) {
       tryQuerySelecedtText();
     }
-  }, [inputText]);
+  }, [markdown]);
 
   function tryQuerySelecedtText() {
     getSelectedText()
@@ -72,6 +72,10 @@ export default function () {
    * Check markdown has code block
    */
   function checkHasCodeBlock(markdown: string) {
+    if (markdown === undefined) {
+      return false;
+    }
+
     const lines = markdown.split("\n");
     const codeBlockSymbol = "```";
     for (const line of lines) {
@@ -83,13 +87,12 @@ export default function () {
   }
 
   const hasCodeBlock = checkHasCodeBlock(markdown);
-
   /**
    * Show list empty view according to hasCodeBlock
    */
   const showListEmptyView = () => {
     if (hasCodeBlock) {
-      return <List.EmptyView icon={Icon.Checkmark} title="Ok, you're ready to set language." />;
+      return <List.EmptyView icon={Icon.Checkmark} title="Ok, ready to set the language." />;
     } else {
       return <List.EmptyView icon={Icon.ExclamationMark} title="Please select the markdown code blocks first!" />;
     }
@@ -114,7 +117,8 @@ export default function () {
               onAction={() => {
                 const newCode = setCodeBlockLanguage(markdown, inputText);
                 Clipboard.paste(newCode);
-                closeMainWindow({ clearRootSearch: true });
+                closeMainWindow();
+                popToRoot();
               }}
             />
           </ActionPanel>
@@ -127,15 +131,15 @@ export default function () {
 }
 
 /**
- * test code block
+ * Test code block:
 
-```ts
+```js
 let a = 0;
 let b = 1;
 let c = a + b;
 ```
 
-```ts
+```js
 function test() {
   console.log("notice the blank line before this function?");
 }
