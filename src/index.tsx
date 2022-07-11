@@ -2,7 +2,7 @@
  * @author: tisfeng
  * @createTime: 2022-06-30 00:23
  * @lastEditor: tisfeng
- * @lastEditTime: 2022-07-11 00:44
+ * @lastEditTime: 2022-07-11 10:06
  * @fileName: index.tsx
  *
  * Copyright (c) 2022 by tisfeng, All Rights Reserved.
@@ -10,7 +10,6 @@
 
 import { Action, ActionPanel, Clipboard, closeMainWindow, getSelectedText, Icon, List } from "@raycast/api";
 import { useEffect, useState } from "react";
-import { languageItems } from "./languages";
 
 export default function () {
   const [inputText, setInputText] = useState<string>("");
@@ -34,7 +33,9 @@ export default function () {
   }
 
   /**
-   *  Replace the language in the code block to the specified language.
+   *  Set or modify the programming language in markdown code blocks in batch.
+   *
+   * @return new code with language
    */
   function setCodeBlockLanguage(code: string, newLanguage: string) {
     // console.log(`code:\n ${code}`);
@@ -67,11 +68,37 @@ export default function () {
     return newCode;
   }
 
+  /**
+   * Check markdown has code block
+   */
+  function checkHasCodeBlock(markdown: string) {
+    const lines = markdown.split("\n");
+    const codeBlockSymbol = "```";
+    for (const line of lines) {
+      if (line.trim().startsWith(codeBlockSymbol)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  const hasCodeBlock = checkHasCodeBlock(markdown);
+
+  /**
+   * Show list empty view according to hasCodeBlock
+   */
+  const showListEmptyView = () => {
+    if (hasCodeBlock) {
+      return <List.EmptyView icon={Icon.Checkmark} title="Ok, you're ready to set language." />;
+    } else {
+      return <List.EmptyView icon={Icon.ExclamationMark} title="Please select the markdown code blocks first!" />;
+    }
+  };
+  const actionTitle = inputText.length > 0 ? `Set Language: ${inputText}` : `Set Language`;
+
   const onInputChangeEvent = (inputText: string) => {
     setInputText(inputText);
   };
-
-  const actionTitle = inputText.length > 0 ? `Set Language: ${inputText}` : `Set Language`;
 
   return (
     <List
@@ -79,49 +106,38 @@ export default function () {
       searchBarPlaceholder={"Type a language..."}
       searchText={inputText}
       onSearchTextChange={onInputChangeEvent}
-      searchBarAccessory={
-        <List.Dropdown
-          tooltip="Select Language"
-          storeValue={true}
-          onChange={(selectedLanauge) => {
-            // console.log(`newValue: ${selectedLanauge}`);
-            setInputText(selectedLanauge);
-          }}
-        >
-          <List.Dropdown.Section title="Set Language">
-            {languageItems.map((languageItem) => (
-              <List.Dropdown.Item key={languageItem.name} title={languageItem.name} value={languageItem.value} />
-            ))}
-          </List.Dropdown.Section>
-        </List.Dropdown>
-      }
       actions={
-        <ActionPanel>
-          <Action
-            title={actionTitle}
-            onAction={() => {
-              const newCode = setCodeBlockLanguage(markdown, inputText);
-              Clipboard.paste(newCode);
-              closeMainWindow({ clearRootSearch: true });
-            }}
-          />
-        </ActionPanel>
+        hasCodeBlock && (
+          <ActionPanel>
+            <Action
+              title={actionTitle}
+              onAction={() => {
+                const newCode = setCodeBlockLanguage(markdown, inputText);
+                Clipboard.paste(newCode);
+                closeMainWindow({ clearRootSearch: true });
+              }}
+            />
+          </ActionPanel>
+        )
       }
     >
-      <List.EmptyView
-        icon={markdown.length > 0 ? Icon.Checkmark : Icon.ExclamationMark}
-        title="Please select the markdown code blocks first"
-      />
+      {showListEmptyView()}
     </List>
   );
 }
 
 /**
  * test code block
- * 
-```js
+
+```ts
 let a = 0;
 let b = 1;
 let c = a + b;
+```
+
+```ts
+function test() {
+  console.log("notice the blank line before this function?");
+}
 ```
  */
